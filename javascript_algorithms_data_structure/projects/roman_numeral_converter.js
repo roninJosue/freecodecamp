@@ -1,36 +1,20 @@
 let position = 1000;
-let number = 700;
-let roman = "";
+let number = 986;
 
 const equivalenceRomanDecimalNumbers = [
-  {
-    roman: "I",
-    decimal: 1,
-  },
-  {
-    roman: "V",
-    decimal: 5,
-  },
-  {
-    roman: "X",
-    decimal: 10,
-  },
-  {
-    roman: "L",
-    decimal: 50,
-  },
-  {
-    roman: "C",
-    decimal: 100,
-  },
-  {
-    roman: "D",
-    decimal: 500,
-  },
-  {
-    roman: "M",
-    decimal: 1000,
-  },
+  { roman: "I", decimal: 1 },
+  { roman: "IV", decimal: 4 },
+  { roman: "V", decimal: 5 },
+  { roman: "IX", decimal: 9 },
+  { roman: "X", decimal: 10 },
+  { roman: "XL", decimal: 40 },
+  { roman: "L", decimal: 50 },
+  { roman: "XC", decimal: 90 },
+  { roman: "C", decimal: 100 },
+  { roman: "CD", decimal: 400 },
+  { roman: "D", decimal: 500 },
+  { roman: "CM", decimal: 900 },
+  { roman: "M", decimal: 1000 },
 ];
 
 const sizeArray = equivalenceRomanDecimalNumbers.length;
@@ -53,67 +37,17 @@ const decomposeNumber = (number) => {
   return arrUnit;
 };
 
-const convertToRoman = (number) => {
-  //console.log(number);
-
+const createRomanNumber = (number) => {
   let letter = findLetter(number);
-  //console.log(letter);
-
-  /**
-   * Recursive function
-   */
-  const division = number / letter.decimal;
-  const resto = number % letter.decimal;
-  //let roman = "";
-
-  //console.log(division, resto, ((resto / 10) > 3));
-
-  if (resto / 10 > 3 && number > letter.decimal) {
-    //console.log(letter.index + 1);
-    letter = {
-      ...equivalenceRomanDecimalNumbers[letter.index + 1],
-      index: letter.index + 1,
-    };
-    //console.log(letter);
+  let roman = '';
+  
+  while (number > 0) {
+    roman += letter.roman
+    number -= letter.decimal
+    letter = findLetter(number);
   }
-  //console.log(letter)
-  while (number >= 1) {
-    //console.log(number, letter.decimal, letter.index);
 
-    /**
-     * Search for letter
-     */
-    console.log(`number: ${number}`);
-    console.log(`letter.decimal: ${letter.decimal}`);
-    if (letter.decimal < number) {
-      number -= letter.decimal;
-      console.log(number);
-      roman += letter.roman;
-      roman = roman.split("").reverse().join("");
-      //roman = letter.roman + roman;
-
-      if (number !== 1) {
-        letter = {
-          ...equivalenceRomanDecimalNumbers[
-            letter.index + 1 < 0 ? 0 : letter.index + 1
-          ],
-          index: letter.index + 1 < 0 ? 0 : letter.index + 1,
-        };
-      }
-
-      // console.log(letter);
-    } else {
-      console.log(letter);
-      number -= letter.decimal;
-      roman += letter.roman;
-      letter = {
-        ...equivalenceRomanDecimalNumbers[letter.index + 1],
-        index: letter.index + 1,
-      };
-    }
-    //number = -1;
-  }
-  console.log(roman);
+  return roman
 };
 
 const findLetter = (number) => {
@@ -125,9 +59,7 @@ const findLetter = (number) => {
         ...equivalenceRomanDecimalNumbers[tempIndex],
         index: tempIndex,
       };
-    } /*else if(index === sizeArray - 1) {
-            return equivalenceRomanDecimalNumbers[sizeArray - 1];
-        }*/
+    }
   }
 
   return {
@@ -136,6 +68,5 @@ const findLetter = (number) => {
   };
 };
 
-decomposeNumber(number).map(convertToRoman);
-
-//console.log(decomposeNumber(number));
+console.log(decomposeNumber(number)
+.map(createRomanNumber).reduce((roman, current) => roman += current, ''));
