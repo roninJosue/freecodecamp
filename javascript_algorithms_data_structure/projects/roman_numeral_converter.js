@@ -2,19 +2,19 @@ let position = 1000;
 let number = 986;
 
 const equivalenceRomanDecimalNumbers = [
-  { roman: "I", decimal: 1 },
-  { roman: "IV", decimal: 4 },
-  { roman: "V", decimal: 5 },
-  { roman: "IX", decimal: 9 },
-  { roman: "X", decimal: 10 },
-  { roman: "XL", decimal: 40 },
-  { roman: "L", decimal: 50 },
-  { roman: "XC", decimal: 90 },
-  { roman: "C", decimal: 100 },
-  { roman: "CD", decimal: 400 },
-  { roman: "D", decimal: 500 },
-  { roman: "CM", decimal: 900 },
-  { roman: "M", decimal: 1000 },
+  {roman: "I", decimal: 1},
+  {roman: "IV", decimal: 4},
+  {roman: "V", decimal: 5},
+  {roman: "IX", decimal: 9},
+  {roman: "X", decimal: 10},
+  {roman: "XL", decimal: 40},
+  {roman: "L", decimal: 50},
+  {roman: "XC", decimal: 90},
+  {roman: "C", decimal: 100},
+  {roman: "CD", decimal: 400},
+  {roman: "D", decimal: 500},
+  {roman: "CM", decimal: 900},
+  {roman: "M", decimal: 1000},
 ];
 
 const sizeArray = equivalenceRomanDecimalNumbers.length;
@@ -40,7 +40,7 @@ const decomposeNumber = (number) => {
 const createRomanNumber = (number) => {
   let letter = findLetter(number);
   let roman = '';
-  
+
   while (number > 0) {
     roman += letter.roman
     number -= letter.decimal
@@ -69,4 +69,4 @@ const findLetter = (number) => {
 };
 
 console.log(decomposeNumber(number)
-.map(createRomanNumber).reduce((roman, current) => roman += current, ''));
+  .map(createRomanNumber).reduce((roman, current) => roman += current, ''));
