@@ -16,7 +16,7 @@ function checkCashRegister(price, cash, cid) {
   let totalRegister = 0;
   let lastIndex = 0;
   let key = true;
-  let test = 0;
+  let amountPerCurrency = 0;
 
   for (let index = currency.length - 1; index >= 0; index--) {
     if (change >= currency[index][1] && key) {
@@ -45,25 +45,22 @@ function checkCashRegister(price, cash, cid) {
   }
 
   while (change > -1 && lastIndex > -1) {
-    let cantidadActualMonedas = cid[lastIndex][1];
-    let valorMonedaActual = currency[lastIndex][1];
+    let currentCurrencyAmount = cid[lastIndex][1];
+    let currentCurrencyValue = currency[lastIndex][1];
 
-    while (change >= valorMonedaActual && cantidadActualMonedas > 0) {
-      change = (change - valorMonedaActual).toFixed(2);
-      cantidadActualMonedas = (cantidadActualMonedas - valorMonedaActual).toFixed(2)
-      test = (test + valorMonedaActual)
+    while (change >= currentCurrencyValue && currentCurrencyAmount > 0) {
+      change = (change - currentCurrencyValue).toFixed(2);
+      currentCurrencyAmount = (currentCurrencyAmount - currentCurrencyValue).toFixed(2)
+      amountPerCurrency = (amountPerCurrency + currentCurrencyValue)
     }
 
-    if (test > 0) {
-      let obj = {};
-      obj[cid[lastIndex][0]] = test
-      arrChange.push([cid[lastIndex][0], test])
-      test = 0;
+    if (amountPerCurrency > 0) {
+      arrChange.push([cid[lastIndex][0], amountPerCurrency])
+      amountPerCurrency = 0;
     }
     lastIndex--
   }
-
-
+  
   return {
     'status': 'OPEN',
     'change': arrChange
