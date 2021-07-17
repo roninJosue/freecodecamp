@@ -15,14 +15,12 @@ function checkCashRegister(price, cash, cid) {
   let change = cash - price;
   let totalRegister = 0;
   let lastIndex = 0;
-  let key = true;
   let amountPerCurrency = 0;
 
   for (let index = currency.length - 1; index >= 0; index--) {
-    if (change >= currency[index][1] && key) {
-      totalRegister += cid[index][1];
+    if (change >= currency[index][1]) {
       lastIndex = index;
-      key = false
+      break;
     }
   }
 
@@ -60,7 +58,7 @@ function checkCashRegister(price, cash, cid) {
     }
     lastIndex--
   }
-  
+
   return {
     'status': 'OPEN',
     'change': arrChange
