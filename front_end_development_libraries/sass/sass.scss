@@ -1,15 +1,58 @@
+@import "css/mixin";
+@import "css/for";
+@import "css/logic";
+@import "css/each";
+@import "css/while";
+
 $text-color: red;
 
-.header{
+.header {
   text-align: center;
 }
+
 .blog-post {
   color: $text-color;
-  h1{
+
+  h1 {
     text-align: center;
     color: blue;
   }
-  p{
+
+  p {
     font-size: 20px;
   }
+}
+
+#awesome {
+  width: 150px;
+  height: 150px;
+  background-color: green;
+  @include border-radius(15px)
+}
+
+#box {
+  width: 150px;
+  height: 150px;
+  background-color: red;
+
+  @include border-stroke(light)
+}
+
+div {
+  height: 200px;
+  width: 200px;
+}
+
+h3{
+  text-align: center;
+}
+.info{
+  width: 200px;
+  border: 1px solid black;
+  margin: 0 auto;
+}
+
+.info-important {
+  @extend .info;
+  background-color: magenta;
 }
