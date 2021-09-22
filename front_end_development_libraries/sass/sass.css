@@ -1,0 +1,108 @@
+.text-1 {
+  font-size: 15px;
+}
+
+.text-2 {
+  font-size: 30px;
+}
+
+.text-3 {
+  font-size: 45px;
+}
+
+.text-4 {
+  font-size: 60px;
+}
+
+.text-5 {
+  font-size: 75px;
+}
+
+.text-6 {
+  font-size: 90px;
+}
+
+.blue-bg {
+  background-color: blue;
+}
+
+.black-bg {
+  background-color: black;
+}
+
+.red-bg {
+  background-color: red;
+}
+
+.text-1 {
+  font-size: 15px;
+}
+
+.text-2 {
+  font-size: 30px;
+}
+
+.text-3 {
+  font-size: 45px;
+}
+
+.text-4 {
+  font-size: 60px;
+}
+
+.text-5 {
+  font-size: 75px;
+}
+
+.header {
+  text-align: center;
+}
+
+.blog-post {
+  color: red;
+}
+.blog-post h1 {
+  text-align: center;
+  color: blue;
+}
+.blog-post p {
+  font-size: 20px;
+}
+
+#awesome {
+  width: 150px;
+  height: 150px;
+  background-color: green;
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  -ms-border-radius: 15px;
+  border-radius: 15px;
+}
+
+#box {
+  width: 150px;
+  height: 150px;
+  background-color: red;
+  border: 1px solid black;
+}
+
+div {
+  height: 200px;
+  width: 200px;
+}
+
+h3 {
+  text-align: center;
+}
+
+.info, .info-important {
+  width: 200px;
+  border: 1px solid black;
+  margin: 0 auto;
+}
+
+.info-important {
+  background-color: magenta;
+}
+
+/*# sourceMappingURL=sass.css.map */
