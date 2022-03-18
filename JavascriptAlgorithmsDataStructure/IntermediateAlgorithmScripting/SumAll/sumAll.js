@@ -1,13 +1,8 @@
 const sumAll = (arr) => {
-  const min = Math.min(...arr)
-  const max = Math.max(...arr)
-  let sum = 0
+  const [first, last] = arr.sort((a, b) => a - b)
+  const count = Math.abs(first - last) + 1
 
-  for (let index = min; index <= max; index++) {
-    sum += index
-  }
-
-  return sum
+  return ((count * (first + last)) / 2)
 }
 
-console.log(sumAll([4, 1]))
+console.log(sumAll([10, 5]))
