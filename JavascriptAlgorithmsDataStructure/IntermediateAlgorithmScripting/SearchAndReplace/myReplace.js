@@ -1,12 +1,10 @@
 const myReplace = (str, before, after) => {
   const regex = new RegExp(before)
-  const firstLetterUpper = before.match(/^[A-Z]/)
+  const firstLetterIsUpper = before.match(/^[A-Z]/)
 
-  if (!!firstLetterUpper) {
-    after = after.replace(/^[a-z]/, after[0].toUpperCase())
-  } else {
-    after = after.toLowerCase()
-  }
+  after = !!firstLetterIsUpper ?
+    after.replace(/^[a-z]/, after[0].toUpperCase()) :
+    after.toLowerCase()
 
   return str.replace(regex, after)
 }
