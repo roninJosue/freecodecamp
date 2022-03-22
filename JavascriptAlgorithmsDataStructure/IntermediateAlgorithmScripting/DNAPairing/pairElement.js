@@ -1,14 +1,12 @@
 const pairElement = (str) => {
-  const DNAPairs = [['A', 'T'], ['G', 'C']]
-  return str.split('').map(item => {
-    return DNAPairs.reduce((acc, dna) => {
-      if (dna.includes(item)) {
-        let index = dna.indexOf(item) === 0 ? 1 : 0
-        return [...acc, item, dna[index]]
-      }
-      return [...acc]
-    }, [])
-  })
+  const pairs = {
+    A: 'T',
+    T: 'A',
+    C: 'G',
+    G: 'C'
+  }
+  return str.split('')
+    .map(x => [x, pairs[x]])
 }
 
 console.log(pairElement("ATCGA"))
