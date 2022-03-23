@@ -1,21 +1,16 @@
-const sumPrimes = (num) => {
-  return [...createOddNumbersArr(num)]
-    .filter((prime) => {
-      let top = Math.ceil(Math.sqrt(prime))
-      for (let index = 3; index <= top; index++) {
-        if (prime % index === 0) return false
-      }
-      return true
-    })
-    .reduce((acc, prime) => acc + prime, 2)
+const sumPrimes = (number) => {
+  let arr = createOddNumbersArr(number)
+  for (let n in arr) {
+    arr = arr.filter(val => val === arr[n] || val % arr[n] !== 0)
+  }
+
+  return arr.reduce((sum, curr) => sum + curr)
 
   function createOddNumbersArr(n) {
-    let primes = []
-    for (let index = 3; index <= n; index++) {
-      if (index % 2 !== 0) primes.push(index)
-    }
-    return primes
+    return Array.from({length: n + 1})
+      .map((_, index) => index)
+      .slice(2)
   }
 }
 
-console.log(sumPrimes(25))
+console.log(sumPrimes(10))
