@@ -1,22 +1,15 @@
 const sumFibs = (num) => {
-  const array = createFibSequence(num)
+  if (num <= 0) return 0
+  const arrFib = [1, 1]
+  let nextFib = 0
 
-  return array.reduce((acc, curr) => {
-    return acc += (curr % 2 !== 0) ? curr : 0
-  }, 0)
-
-  function createFibSequence(n) {
-    let arr = [0, 1]
-    let index = 2
-    let curr = 0
-
-    while (curr <= n) {
-      curr = arr[index - 2] + arr[index - 1]
-      if (curr <= num) arr.push(curr)
-      index++
-    }
-    return arr
+  while ((nextFib = arrFib[0] + arrFib[1]) <= num) {
+    arrFib.unshift(nextFib)
   }
+
+  return arrFib
+    .filter(x => x % 2 !== 0)
+    .reduce((a, b) => a + b)
 }
 
-console.log(sumFibs(10))
+console.log(sumFibs(0))
