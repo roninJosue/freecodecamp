@@ -1,45 +1,24 @@
 const smallestCommons = (arr) => {
-  const start = Math.min(...arr)
-  const end = Math.max(...arr)
-  const arrSeq = Array.from({length: (end - start) + 1},
-    (_, index) => start + (index))
-    .filter(n => n > 1)
+  let min = Math.min(...arr)
+  let max = Math.max(...arr)
+  let array = []
 
-  const primeFactors = arrSeq.map(number => primeFactorization(number))
-
-  const lcm = primeFactors.reduce((acc, curr) => {
-    Object.keys(curr).map(key => {
-      if (!acc.hasOwnProperty(key) || acc[key] < curr[key]) {
-        acc[key] = curr[key]
-      }
-    })
-    return acc
-  }, {})
-
-  return Object.entries(lcm).reduce((x, curr) => {
-    return x * ((parseInt(curr[0])) ** parseInt(curr[1]))
-  }, 1)
-
-  function primeFactorization(number) {
-    const primes = [2, 3, 5, 7, 11]
-    let obj = {}
-    let init = 0
-
-    do {
-      if (number % primes[init] === 0) {
-        number /= primes[init]
-        obj[primes[init]] = (obj[primes[init]] || 0) + 1
-      } else {
-        init++
-      }
-    } while (init < primes.length)
-    if (number > 1) {
-      obj[number] = 1
-    }
-
-    return obj
+  for (min; min <= max; min++) {
+    array.push(min)
   }
 
+  let n = max * (max - 1)
+
+  const lowestCommons = (currentValue) => n % currentValue === 0
+
+  let common = array.every(lowestCommons)
+
+  while (common === false) {
+    n++
+    common = array.every(lowestCommons)
+  }
+
+  return n
 }
 
-console.log(smallestCommons([1, 3]))
+console.log(smallestCommons([23, 18]))
