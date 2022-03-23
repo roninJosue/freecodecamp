@@ -9,9 +9,7 @@ const smallestCommons = (arr) => {
 
   const lcm = primeFactors.reduce((acc, curr) => {
     Object.keys(curr).map(key => {
-      if (!acc.hasOwnProperty(key)) {
-        acc[key] = curr[key]
-      } else if (acc[key] < curr[key]) {
+      if (!acc.hasOwnProperty(key) || acc[key] < curr[key]) {
         acc[key] = curr[key]
       }
     })
@@ -44,4 +42,4 @@ const smallestCommons = (arr) => {
 
 }
 
-console.log(smallestCommons([23, 18]))
+console.log(smallestCommons([1, 3]))
