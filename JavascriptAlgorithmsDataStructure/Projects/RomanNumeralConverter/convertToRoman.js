@@ -1,4 +1,4 @@
-const equivalenceRomanDecimalNumbers = [
+const romanToDecimal = [
   {roman: "I", decimal: 1},
   {roman: "IV", decimal: 4},
   {roman: "V", decimal: 5},
@@ -13,18 +13,18 @@ const equivalenceRomanDecimalNumbers = [
   {roman: "CM", decimal: 900},
   {roman: "M", decimal: 1000},
 ];
-const sizeArray = equivalenceRomanDecimalNumbers.length;
+const sizeArray = romanToDecimal.length;
 
 const findLetter = (number) => {
   for (let index = 0; index < sizeArray; index++) {
-    const element = equivalenceRomanDecimalNumbers[index];
+    const element = romanToDecimal[index];
     if (element.decimal >= number) {
-      return  element.decimal === number ? element : equivalenceRomanDecimalNumbers[index - 1]
+      return  element.decimal === number ? element : romanToDecimal[index - 1]
     }
   }
 
   return {
-    ...equivalenceRomanDecimalNumbers[sizeArray - 1],
+    ...romanToDecimal[sizeArray - 1],
   };
 };
 
