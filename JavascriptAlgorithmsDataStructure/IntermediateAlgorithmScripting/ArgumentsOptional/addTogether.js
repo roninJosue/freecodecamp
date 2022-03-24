@@ -1,12 +1,8 @@
 const addTogether = (...arr) => {
   const checkNum = (num) => typeof num !== 'number'
 
-  if (arr.length === 2) {
-    const allNumbers = arr.every(n => {
-      return !checkNum(n)
-    })
-    if (!allNumbers) return undefined
-  } else if (checkNum(arr[0])) {
+  if ((arr.length === 2 && !arr.every(n => !checkNum(n))
+    || checkNum(arr[0]))) {
     return undefined
   }
 
