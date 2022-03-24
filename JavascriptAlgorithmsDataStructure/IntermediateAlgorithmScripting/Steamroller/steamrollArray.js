@@ -1,15 +1,6 @@
 const steamrollArray = (array) => {
-  let res = []
-  const recursive = (arr) => {
-    arr.forEach(element => {
-      Array.isArray(element) ?
-        recursive(element) :
-        res.push(element)
-    })
-  }
-
-  recursive(array)
-  return res
+  let flat = [].concat(...array)
+  return flat.some(Array.isArray) ? steamrollArray(flat) : flat
 }
 
-console.log(steamrollArray([[["a"]], [["b"]]]))
+steamrollArray([[["a"]], [["b"]]])
