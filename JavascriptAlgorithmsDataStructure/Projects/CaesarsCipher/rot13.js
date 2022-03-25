@@ -10,7 +10,7 @@ const rot13 = (str) => {
     }
 
     return cipherLetter
-  }).reduce((letter, current) => letter += current, '')
-};
+  }).reduce((letter, current) => letter + current, '')
+}
 
 console.log(rot13("SERR YBIR?"));
