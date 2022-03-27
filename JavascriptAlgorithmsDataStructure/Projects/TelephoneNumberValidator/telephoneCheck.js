@@ -1,5 +1,16 @@
 function telephoneCheck(str) {
-  return /^(1\s?)?(\(\d{3}\)|\d{3})[-\s?]?\d{3}[-\s]\d{4}|(^\d{10}$)$/.test(str);
+  const validTelephoneNumber = [
+    /^\d{3}-\d{3}-\d{4}$/,
+    /^1 \d{3}-\d{3}-\d{4}$/,
+    /^1 \(\d{3}\) \d{3}-\d{4}$/,
+    /^\d{10}$/,
+    /^\(\d{3}\)\d{3}-\d{4}$/,
+    /^1 \d{3} \d{3} \d{4}$/,
+    /1\(\d{3}\)\d{3}-\d{4}/
+  ]
+
+  return validTelephoneNumber
+    .some(regex => regex.test(str))
 }
 
-telephoneCheck("555-555-5555");
+console.log(telephoneCheck("555-555-5555"))
