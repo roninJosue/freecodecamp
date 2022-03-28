@@ -2,7 +2,11 @@
 
 ### Solution
 
-![random-quote-machine](random-quote-machine.jpg)
+#### Desktop preview
+![random-quote-machine](random-quote-machine-desktop.jpg)
+
+#### Mobile preview
+![random-quote-machine-mobile](random-quote-machine-mobile.jpg)
 <br>
 [live example](https://rc-random-quote-machine.netlify.app/)
 <br>
