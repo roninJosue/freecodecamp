@@ -3,16 +3,18 @@
 ### Solution
 
 #### Desktop preview
+
 ![random-quote-machine](random-quote-machine-desktop.jpg)
 
 #### Mobile preview
-![random-quote-machine-mobile](random-quote-machine-mobile.jpg)
-<br>
-[live example](https://rc-random-quote-machine.netlify.app/)
+
+<img src="random-quote-machine-mobile.jpg" alt="random-quote-machine-mobile" width="440" />
+
+
+[Live example](https://rc-random-quote-machine.netlify.app/)
 <br>
 <br>
 [Repository](https://github.com/roninJosue/random-quote-machine)
----
 
 Objective: Build a [CodePen.io](https://codepen.io/) app that is functionally similar to this:
 [https://codepen.io/freeCodeCamp/full/qRZeGZ/](https://codepen.io/freeCodeCamp/full/qRZeGZ/)
