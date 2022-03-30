@@ -2,8 +2,12 @@
 
 ### Solution
 
-#### Preview
+#### Desktop preview
+
 ![Markdown](drumMachine.jpg)
+
+#### Mobile preview
+<img src="drum-machine-mobile.jpg" alt="random-quote-machine-mobile" width="440" />
 
 [Live example](https://fcc-drum-machine-rc.netlify.app/)
 <br>
