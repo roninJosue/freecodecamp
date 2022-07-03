@@ -43,7 +43,7 @@
       .then(response => response.json())
       .then(({data}) => {
         const width = 800
-        const height = 700
+        const height = 800
         const barWidth = width / 275
 
         const tooltip = d3.select('.container')
@@ -124,8 +124,8 @@
 
           })
           .on('mouseout', () => {
-            tooltip.transition().duration().style('opacity', 0)
-            overlay.transition().duration().style('opacity', 0)
+            tooltip.transition().duration(20).style('opacity', 0)
+            overlay.transition().duration(20).style('opacity', 0)
           })
 
       })
