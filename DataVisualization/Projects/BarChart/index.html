@@ -1,6 +1,27 @@
 <!doctype html>
 <html lang="en">
 <head>
+    <style>
+        .container {
+            position: relative;
+        }
+
+        .overlay {
+            background-color: orange;
+            position: absolute;
+        }
+
+        #tooltip {
+            position: absolute;
+            min-width: 150px;
+            background-color: #000;
+            color: #fff;
+            border-radius: 10px;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+        }
+    </style>
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
@@ -8,30 +29,107 @@
     <title>Bar Chart</title>
 </head>
 <body>
+<main class="container">
+    <h1 id="title">Bar Chart</h1>
+    <div class="svg">
 
+    </div>
+</main>
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <script src="https://cdn.freecodecamp.org/testable-projects-fcc/v1/bundle.js"></script>
 <script>
-  const dataset = [12, 31, 22, 17, 25, 18, 29, 14, 9, 1, 6, 10, 13, 21, 27, 11, 7, 99];
+  (function () {
+    fetch('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/master/GDP-data.json')
+      .then(response => response.json())
+      .then(({data}) => {
+        const width = 800
+        const height = 700
+        const barWidth = width / 275
 
-  const w = 1500;
-  const h = 100;
+        const tooltip = d3.select('.container')
+          .append('div')
+          .attr('id', 'tooltip')
+          .style('opacity', 0)
 
-  const svg = d3.select("body")
-    .append("svg")
-    .attr("width", w)
-    .attr("height", h);
+        const overlay = d3.select('.svg').append('div').attr('class', 'overlay').style('opacity', 0)
 
-  svg.selectAll("rect")
-    .data(dataset)
-    .enter()
-    .append("rect")
-    .attr("x", (d, i) => i * 33)
-    .attr("y", (d, i) => h - 3 * d)
-    .attr("width", 25)
-    .attr("height", (d, i) => 3 * d)
-  .attr("fill", "steelblue");
+        const svg = d3.select('.svg')
+          .append('svg')
+          .attr('width', width + 100)
+          .attr('height', height + 60)
 
+        svg.append('text').attr('transform', 'rotate(-90)').attr('x', -200).attr('y', 100).text('Gross Domestic Product')
+
+        const years = data.map(d => d[0])
+
+        const yearsDate = data.map(d => new Date(d[0]))
+
+        const xMax = new Date(d3.max(yearsDate))
+        xMax.setMonth(xMax.getMonth() + 3)
+        const xScale = d3.scaleTime().domain([d3.min(yearsDate), xMax]).range([0, width])
+        const xAxis = d3.axisBottom().scale(xScale)
+
+        svg.append('g').call(xAxis).attr('id', 'x-axis').attr('transform', `translate(80, ${height})`)
+
+        const gdp = data.map(d => d[1])
+        const maxPopulation = d3.max(gdp)
+        const linearScale = d3.scaleLinear().domain([0, maxPopulation]).range([0, height])
+        const scaledGdp = gdp.map(d => linearScale(d))
+
+        const yAxisScale = d3.scaleLinear().domain([0, maxPopulation]).range([height, 0])
+        const yAxis = d3.axisLeft(yAxisScale)
+
+        svg.append('g').call(yAxis).attr('id', 'y-axis').attr('transform', 'translate(80, 0)')
+        d3.select('svg')
+          .selectAll('rect')
+          .data(scaledGdp)
+          .enter()
+          .append('rect')
+          .attr('data-date', (d, index) => {
+            return data[index][0]
+          })
+          .attr('data-gdp', (d, index) => {
+            return data[index][1]
+          })
+          .attr('class', 'bar')
+          .attr('x', (d, i) => {
+            return xScale(yearsDate[i])
+          })
+          .attr('y', d => {
+            return height - d
+          })
+          .attr('width', barWidth)
+          .attr('height', d => d)
+          .attr('index', (d, i) => i)
+          .style('fill', 'rgb(85, 83, 255)')
+          .attr('transform', 'translate(80, 0)')
+          .on('mouseover', function (event, d) {
+            const i = this.getAttribute('index')
+            overlay
+              .transition()
+              .duration(0)
+              .style('height', `${d}px`)
+              .style('width', `${barWidth}px`)
+              .style('opacity', 0.9)
+              .style('left', `${(i * barWidth)}px`)
+              .style('top', `${height - d + 58}px`)
+              .style('transform', 'translate(80px)')
+            tooltip.transition().duration(0).style('opacity', 0.9)
+            tooltip
+              .html(`<span>${years[i]}</span><span>${gdp[i]}</span>`)
+              .attr('data-date', data[i][0])
+              .style('left', `${i * barWidth + 30}px`)
+              .style('top', `${height - 100}px`)
+              .style('transform', 'translateX(60px)')
+
+          })
+          .on('mouseout', () => {
+            tooltip.transition().duration().style('opacity', 0)
+            overlay.transition().duration().style('opacity', 0)
+          })
+
+      })
+  })()
 </script>
 </body>
 </html>
