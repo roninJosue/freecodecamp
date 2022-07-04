@@ -9,12 +9,15 @@
         #tooltip {
             position: absolute;
             min-width: 150px;
-            background-color: #000;
+            background-color: #673ab7;
             color: #fff;
             border-radius: 10px;
             padding: 1rem;
             display: flex;
             flex-direction: column;
+        }
+        .dot{
+            cursor: pointer;
         }
     </style>
     <meta charset="UTF-8">
@@ -34,7 +37,7 @@
     fetch('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/master/cyclist-data.json')
       .then(response => response.json())
       .then((data) => {
-        const formatData = data.map(d =>{
+        const formatData = data.map(d => {
           const Place = +d.Place
           const parsedTime = d.Time.split(':')
           const time = new Date(1970, 0, 1, 0, parsedTime[0], parsedTime[1])
@@ -44,6 +47,7 @@
             Time: time,
           }
         })
+
         const width = 800
         const height = 700
         const color = d3.scaleOrdinal(d3.schemeCategory10);
@@ -83,15 +87,7 @@
           .style('font-size', '30px')
           .text('Doping in Professional Bicycle Racing');
 
-        svg
-          .append('text')
-          .attr('x', width / 2)
-          .attr('y', 100 / 2 + 25)
-          .attr('text-anchor', 'middle')
-          .style('font-size', '20px')
-          .text("35 Fastest times up Alpe d'Huez");
-
-        const legend = svg.append('g').attr('id', 'legend')
+        svg.append('g').attr('id', 'legend')
 
         x.domain([
           d3.min(formatData, d => d.Year - 1),
@@ -130,27 +126,21 @@
           .enter()
           .append('circle')
           .attr('class', 'dot')
-          .attr('r', 6)
+          .attr('r', 8)
           .attr('cx', d => x(d.Year))
           .attr('cy', d => y(d.Time))
           .attr('data-xvalue', d => d.Year)
           .attr('data-yvalue', d => d.Time.toISOString())
-          .style('fill', d => color(d.Doping !== ''))
-          .on('mouseover',(event, d) => {
+          .style('fill', d => d.Doping !== '' ? '#0288d1' : '#ef5350')
+          .on('mouseover', (event, d) => {
             tooltip.style('opacity', 0.9);
             tooltip.attr('data-year', d.Year);
             tooltip
               .html(
-                d.Name +
-                ': ' +
-                d.Nationality +
-                '<br/>' +
-                'Year: ' +
-                d.Year +
-                 ', Time: ' +
-                timeFormat(d.Time) +
-                (d.Doping ? '<br/><br/>' + d.Doping : '')
-              )
+                `<span>${d.Name}: ${d.Nationality}</span>
+                 <span>Year: ${d.Year}</span>
+                 <span>Time: ${timeFormat(d.Time)}</span>
+                 <span>${d.Doping ? d.Doping : ''}</span>`)
               .style('left', event.pageX + 'px')
               .style('top', event.pageY - 28 + 'px');
           })
