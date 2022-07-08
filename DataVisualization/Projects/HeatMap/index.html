@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <style>
+        .container {
+            position: relative;
+        }
+
+        #tooltip {
+            position: absolute;
+            min-width: 100px;
+            background-color: #000;
+            color: #fff;
+            border-radius: 10px;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+        }
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Scatterplot Graph</title>
+</head>
+<body>
+<main class="container">
+    <div class="svg"></div>
+</main>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="https://cdn.freecodecamp.org/testable-projects-fcc/v1/bundle.js"></script>
+<script>
+  (function () {
+    const url = 'https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/master/global-temperature.json'
+
+    const color = (temp) => {
+      switch (temp) {
+        case 1:
+          return '#3182bd'
+        case 2:
+          return '#6baed6'
+        case 3:
+          return '#9ecae1'
+        case 4:
+          return '#31a354'
+        case 5:
+          return '#238b45'
+        case 6:
+          return '#74c476'
+        case 7:
+          return '#a1d99b'
+        case 8:
+          return '#ffffb2'
+        case 9:
+          return '#fdae61'
+        case 10:
+          return '#f46d43'
+        case 11:
+          return '#d73027'
+        case 12:
+          return '#a50026'
+        default:
+          return '#7f0000'
+      }
+    }
+
+    const tooltip = d3.select('.container')
+      .append('div')
+      .attr('id', 'tooltip')
+      .style('opacity', 0)
+
+    fetch(url)
+      .then(response => response.json())
+      .then((data) => {
+        const {baseTemperature, monthlyVariance = []} = data
+
+        const onMouseOver = (event, d) => {
+          tooltip.style('opacity', 0.6);
+          tooltip.style('left', event.pageX + 'px');
+          tooltip.style('top', event.pageY + 'px');
+          tooltip.attr('data-year', d.year);
+          tooltip.html(
+            `${d.year}<br>
+               ${(baseTemperature + d.variance).toFixed(2)}°C
+            `);
+        }
+
+        const onMouseOut = () => {
+          tooltip.style('opacity', 0);
+        }
+
+        const months = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+        const years = [...new Set(monthlyVariance.map(d => d.year))]
+        const width = 5 * Math.ceil(monthlyVariance.length / 12)
+        const height = 33 * 12
+        const fontSize = 16;
+        const padding = {
+          left: 9 * fontSize,
+          right: 9 * fontSize,
+          top: fontSize,
+          bottom: 8 * fontSize
+        };
+
+        const svg = d3.select('.svg')
+          .append('svg')
+          .attr('width', width + padding.left + padding.right)
+          .attr('height', height + padding.top + padding.bottom)
+
+        const legend = svg.append('g')
+          .attr('transform', `translate(${padding.left}, ${height + padding.top})`)
+          .attr('id', 'legend')
+
+        svg.append('text')
+          .text('Monthly Global Land-Surface Temperature')
+          .attr('x', width / 2)
+          .attr('y', 30)
+          .attr('id', 'title')
+
+        svg.append('text')
+          .text(`${monthlyVariance[0].year}-${monthlyVariance[monthlyVariance.length - 1].year} Base Temperature: ${baseTemperature}°C`)
+          .attr('x', width / 2)
+          .attr('y', 60)
+          .attr('id', 'description')
+
+        const yScale = d3
+          .scaleBand()
+          .domain(months)
+          .rangeRound([0, height])
+          .padding(0)
+
+        const yAxis = d3.axisLeft()
+          .scale(yScale)
+          .tickValues(yScale.domain())
+          .tickFormat(month => {
+            let date = new Date(0)
+            date.setUTCMonth(month + 1)
+            const format = d3.timeFormat('%B')
+            return format(date)
+          })
+          .tickSize(10, 1)
+
+        const xScale = d3
+          .scaleBand()
+          .domain(years)
+          .range([0, width])
+
+        const xAxis = d3.axisBottom()
+          .scale(xScale)
+          .tickValues(
+            xScale.domain().filter(year => {
+              return year % 20 === 0
+            })
+          ).tickFormat(year => {
+            let date = new Date(0)
+            date.setUTCFullYear(year)
+            const format = d3.timeFormat('%Y')
+            return format(date)
+          }).tickSize(10, 1)
+
+        svg.append('g')
+          .classed('y-axis', true)
+          .attr('id', 'y-axis')
+          .attr('transform', `translate(80, 90)`)
+          .call(yAxis)
+
+        svg.append('g')
+          .classed('x-axis', true)
+          .attr('id', 'x-axis')
+          .attr('transform', `translate(80, ${height + 90} )`)
+          .call(xAxis)
+
+        svg
+          .append('g')
+          .classed('map', true)
+          .attr('transform', `translate(80, 90)`)
+          .selectAll('rect')
+          .data(monthlyVariance)
+          .enter()
+          .append('rect')
+          .attr('class', 'cell')
+          .attr('data-month', d => d.month - 1)
+          .attr('data-year', d => d.year)
+          .attr('data-temp', d => baseTemperature + d.variance)
+          .attr('x', d => xScale(d.year))
+          .attr('y', d => yScale(d.month - 1))
+          .attr('width', d => xScale.bandwidth(d.year))
+          .attr('height', d => yScale.bandwidth(d.month - 1))
+          .attr('fill', d => color(parseInt(baseTemperature + d.variance)))
+          .on('mouseover', onMouseOver)
+          .on('mouseout', onMouseOut)
+
+        legend
+          .selectAll('rect')
+          .data([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11])
+          .enter()
+            .append('rect')
+          .attr('fill', d => color(d))
+
+      }).catch(err => {
+      console.log(err)
+    })
+  })()
+</script>
+</body>
+</html>
