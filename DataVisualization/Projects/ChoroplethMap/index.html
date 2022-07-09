@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <style>
+        html{
+            font-family: 'Roboto', sans-serif;
+        }
+        .container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #tooltip {
+            position: absolute;
+            min-width: 100px;
+            background-color: #000;
+            color: #fff;
+            border-radius: 10px;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+        }
+        #title,#description{
+            text-align: center;
+        }
+
+        svg{
+            margin: 0 auto;
+        }
+
+        .county:hover{
+            border: 1px solid #000;
+        }
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Choropleth Map</title>
+</head>
+<body>
+<main class="container">
+    <h1 id="title">United States Educational Attaiment</h1>
+    <h3 id="description">Percentage of adults age 25 and older with a bachelor's degree or higher (2010-2014)</h3>
+    <svg width="960" height="600"></svg>
+</main>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="https://cdn.freecodecamp.org/testable-projects-fcc/v1/bundle.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+<script>
+  (function () {
+    const educationDataUrl = 'https://cdn.freecodecamp.org/testable-projects-fcc/data/choropleth_map/for_user_education.json';
+    const countyDataUrl = 'https://cdn.freecodecamp.org/testable-projects-fcc/data/choropleth_map/counties.json';
+
+    const getEducationData = () => fetch(educationDataUrl).then(res => res.json())
+
+    const getCountyDara = () => fetch(countyDataUrl).then(res => res.json())
+
+    const svg = d3.select('svg')
+
+    const tooltip = d3
+      .select('.container')
+      .append('div')
+      .attr('id', 'tooltip')
+      .style('opacity', 0)
+
+    const colorScale = d3
+      .scaleThreshold()
+      .domain(d3.range(2.6, 75.1, (75.1 - 2.6) / 8))
+      .range(d3.schemeBlues[7])
+
+    const legend = svg.append('g')
+      .attr('transform', `translate(80, 90)`)
+      .attr('id', 'legend')
+
+    Promise.all([
+      getCountyDara(),
+      getEducationData()
+    ]).then(([county, education]) => {
+
+      const onMouseEnter = (e, data) => {
+        const filter = education
+          .filter(d => d.fips === data.id)
+          .reduce((acc, d) => {
+            return {
+              bachelorsOrHigher: d.bachelorsOrHigher,
+              name: d.area_name,
+            }
+          }, {})
+        tooltip
+          .style('opacity', .6)
+          .style('left', `${e.pageX + 10}px`)
+          .style('top', `${e.pageY - 10}px`)
+          .attr('data-education', filter.bachelorsOrHigher)
+          .html(`
+            <div>${filter.name}</div>
+            <div>${filter.bachelorsOrHigher}%</div>
+            `)
+      }
+
+      svg.append('g')
+        .attr('class', 'counties')
+        .selectAll('path')
+        .data(topojson.feature(county, county.objects.counties).features)
+        .enter()
+        .append('path')
+        .attr('class', 'county')
+        .attr('data-fips', d => d.id)
+        .attr('data-education', d => {
+          const result = education.filter(item => item.fips === d.id)
+          return result.length ? result[0].bachelorsOrHigher : 0
+        })
+        .attr('fill', d => {
+          const result = education.filter(item => item.fips === d.id)
+          return result.length ? colorScale(result[0].bachelorsOrHigher) : colorScale(0)
+        })
+        .attr('d', d3.geoPath())
+        .on('mouseenter', onMouseEnter)
+        .on('mouseleave', () => tooltip.style('opacity', 0))
+
+      legend
+        .selectAll('rect')
+        .data([2.6, 3.5, 4.3, 5.1, 6.4, 10.4, 11.6, 12.8, 14.1, 15.3, 16.5, 17.7, 18.9, 20.1, 21.3, 22.5, 23.7, 24.9, 26.1, 27.3, 28.5, 29.7, 62.1, 63.3, 64.5])
+        .enter()
+        .append('rect')
+        .attr('fill', d => colorScale(d))
+
+    }).catch(err => {
+      console.log(err)
+    })
+  })()
+</script>
+</body>
+</html>
