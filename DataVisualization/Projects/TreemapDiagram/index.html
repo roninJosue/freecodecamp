@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <style>
+        html {
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #tooltip {
+            position: absolute;
+            min-width: 100px;
+            background-color: #000;
+            color: #fff;
+            border-radius: 10px;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #title, #description {
+            text-align: center;
+        }
+
+        svg {
+            margin: 0 auto;
+        }
+
+        .county:hover {
+            border: 1px solid #000;
+        }
+
+        .tile-text {
+            font-size: 0.6rem;
+            color: #fff;
+        }
+
+        .tspan {
+            color: #fff !important;
+        }
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Treemap Diagram</title>
+</head>
+<body>
+<main class="container">
+    <h1 id="title">Video Games</h1>
+    <h3 id="description"></h3>
+    <svg id="treemap" width="960" height="600"></svg>
+</main>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="https://cdn.freecodecamp.org/testable-projects-fcc/v1/bundle.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+<script>
+  (function () {
+    const url = 'https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/video-game-sales-data.json';
+
+    const svg = d3.select('svg')
+
+    const tooltip = d3
+      .select('.container')
+      .append('div')
+      .attr('id', 'tooltip')
+      .style('opacity', 0)
+
+    const legend = svg.append('g')
+      .attr('transform', `translate(80, 90)`)
+      .attr('id', 'legend')
+
+    fetch(url)
+      .then(res => res.json())
+      .then((data) => {
+        //console.log(children)
+        d3.select('#description').text(data.name)
+        const root = d3.hierarchy(data)
+          .eachBefore(d => d.data.id = `${(d.parent ? `${d.parent.data.id}.` : '')}${d.data.name}`)
+          .sum(d => d.value)
+          .sort((a, b) => b.height - a.height || b.value - a.value)
+
+        d3.treemap()
+          .size([960, 600])
+          .padding(1)
+          (root)
+
+        const colors = d3.scaleOrdinal()
+          .domain(data.children.map(d => d.name))
+          .range([
+            '#4A148C',
+            '#6A1B9A',
+            '#AB47BC',
+            '#AA00FF',
+            '#880E4F',
+            '#AD1457',
+            '#D81B60',
+            '#C51162',
+            '#B71C1C',
+            '#0D47A1',
+            '#2962FF',
+            '#1976D2',
+            '#004D40',
+            '#00796B',
+            '#01579B',
+            '#1B5E20',
+            '#212121',
+            '#BF360C'
+          ])
+
+        const cell = svg.selectAll('g')
+          .data(root.leaves())
+          .enter()
+          .append('g')
+          .attr('class', 'group')
+          .attr('transform', d => `translate(${d.x0}, ${d.y0})`);
+
+        cell.append('rect')
+          .attr('id', d => d.data.id)
+          .attr('class', 'tile')
+          .attr('width', d => d.x1 - d.x0)
+          .attr('height', d => d.y1 - d.y0)
+          .attr('data-name', d => d.data.name)
+          .attr('data-category', d => d.data.category)
+          .attr('data-value', d => d.data.value)
+          .attr('fill', d => colors(d.data.name))
+          .on('mouseover', function (event, d) {
+            tooltip.transition()
+              .duration(200)
+              .style('opacity', .9)
+              .attr('data-value', d.data.value)
+            tooltip.html(`
+              <div class="tile-text">
+                <span class="tspan">${d.data.name}</span>
+                <span class="tspan">${d.data.category}</span>
+                <span class="tspan">${d.data.value}</span>
+              </div>
+            `)
+              .style('left', `${event.pageX + 10}px`)
+              .style('top', `${event.pageY - 10}px`)
+          })
+          .on('mouseout', function (event, d) {
+            tooltip.transition()
+              .duration(500)
+              .style('opacity', 0)
+          })
+
+        cell.append('text')
+          .attr('class', 'tile-text')
+          .selectAll('tspan')
+          .data(d => d.data.name.split(/(?=[A-Z][^A-Z])/g))
+          .enter()
+          .append('tspan')
+          .attr('class', 'tspan')
+          .attr('x', 4)
+          .attr('y', (d, i) => i * 10 + 13)
+          .text(d => d)
+          .style('color', '#fff')
+
+        let categories = root.leaves().map(d => d.data.category)
+        categories = categories.filter((item, i, ar) => ar.indexOf(item) === i)
+
+        const legendElem = legend.append('g')
+          .attr('transform', `translate(60, ${20})`)
+          .selectAll('g')
+          .data(categories)
+          .enter()
+          .append('g')
+          .attr('transform', (d, i) => `translate(${(60)}, ${i * 20})`)
+
+        legendElem.append('rect')
+          .attr('width', 20)
+          .attr('height', 20)
+          .attr('class', 'legend-item')
+          .attr('fill', d => colors(d))
+
+      })
+  })()
+</script>
+</body>
+</html>
