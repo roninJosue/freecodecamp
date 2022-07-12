@@ -85,19 +85,11 @@
           .data(scaledGdp)
           .enter()
           .append('rect')
-          .attr('data-date', (d, index) => {
-            return data[index][0]
-          })
-          .attr('data-gdp', (d, index) => {
-            return data[index][1]
-          })
+          .attr('data-date', (d, index) => data[index][0])
+          .attr('data-gdp', (d, index) => data[index][1])
           .attr('class', 'bar')
-          .attr('x', (d, i) => {
-            return xScale(yearsDate[i])
-          })
-          .attr('y', d => {
-            return height - d
-          })
+          .attr('x', (d, i) => xScale(yearsDate[i]))
+          .attr('y', d => height - d)
           .attr('width', barWidth)
           .attr('height', d => d)
           .attr('index', (d, i) => i)
