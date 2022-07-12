@@ -116,21 +116,21 @@
             '#BF360C'
           ])
 
-        const cell = svg.selectAll('g')
+        const group = svg.selectAll('g')
           .data(root.leaves())
           .enter()
           .append('g')
           .attr('class', 'group')
           .attr('transform', d => `translate(${d.x0}, ${d.y0})`);
 
-        cell.append('rect')
+        group.append('rect')
           .attr('id', d => d.data.id)
           .attr('class', 'tile')
-          .attr('width', d => d.x1 - d.x0)
           .attr('height', d => d.y1 - d.y0)
+          .attr('width', d => d.x1 - d.x0)
+          .attr('data-value', d => d.data.value)
           .attr('data-name', d => d.data.name)
           .attr('data-category', d => d.data.category)
-          .attr('data-value', d => d.data.value)
           .attr('fill', d => colors(d.data.name))
           .on('mouseover', function (event, d) {
             tooltip.transition()
@@ -153,15 +153,15 @@
               .style('opacity', 0)
           })
 
-        cell.append('text')
+        group.append('text')
           .attr('class', 'tile-text')
           .selectAll('tspan')
-          .data(d => d.data.name.split(/(?=[A-Z][^A-Z])/g))
+          .data(d => d.data.name.split(' '))
           .enter()
           .append('tspan')
           .attr('class', 'tspan')
-          .attr('x', 4)
-          .attr('y', (d, i) => i * 10 + 13)
+          .attr('x', 10)
+          .attr('y', (d, i) => i * 10 + 20)
           .text(d => d)
           .style('color', '#fff')
 

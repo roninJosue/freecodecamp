@@ -91,23 +91,16 @@
 
         const months = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
         const years = [...new Set(monthlyVariance.map(d => d.year))]
-        const width = 5 * Math.ceil(monthlyVariance.length / 12)
-        const height = 33 * 12
-        const fontSize = 16;
-        const padding = {
-          left: 9 * fontSize,
-          right: 9 * fontSize,
-          top: fontSize,
-          bottom: 8 * fontSize
-        };
+        const width = 1300
+        const height = 400
 
         const svg = d3.select('.svg')
           .append('svg')
-          .attr('width', width + padding.left + padding.right)
-          .attr('height', height + padding.top + padding.bottom)
+          .attr('width', width + 250)
+          .attr('height', height + 140)
 
         const legend = svg.append('g')
-          .attr('transform', `translate(${padding.left}, ${height + padding.top})`)
+          .attr('transform', `translate(${144}, ${height + 20})`)
           .attr('id', 'legend')
 
         svg.append('text')

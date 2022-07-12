@@ -43,30 +43,28 @@
       .then(response => response.json())
       .then(({data}) => {
         const width = 800
-        const height = 800
-        const barWidth = width / 275
+        const height = 900
+        const barWidth = 3
 
         const tooltip = d3.select('.container')
           .append('div')
           .attr('id', 'tooltip')
           .style('opacity', 0)
 
-        const overlay = d3.select('.svg').append('div').attr('class', 'overlay').style('opacity', 0)
-
         const svg = d3.select('.svg')
           .append('svg')
-          .attr('width', width + 100)
-          .attr('height', height + 60)
+          .attr('width', width)
+          .attr('height', height + 20)
 
         svg.append('text').attr('transform', 'rotate(-90)').attr('x', -200).attr('y', 100).text('Gross Domestic Product')
 
         const years = data.map(d => d[0])
 
-        const yearsDate = data.map(d => new Date(d[0]))
+        const date = data.map(d => new Date(d[0]))
 
-        const xMax = new Date(d3.max(yearsDate))
-        xMax.setMonth(xMax.getMonth() + 3)
-        const xScale = d3.scaleTime().domain([d3.min(yearsDate), xMax]).range([0, width])
+        const max = new Date(d3.max(date))
+        max.setMonth(max.getMonth() + 3)
+        const xScale = d3.scaleTime().domain([d3.min(date), max]).range([0, width])
         const xAxis = d3.axisBottom().scale(xScale)
 
         svg.append('g').call(xAxis).attr('id', 'x-axis').attr('transform', `translate(80, ${height})`)
@@ -88,7 +86,7 @@
           .attr('data-date', (d, index) => data[index][0])
           .attr('data-gdp', (d, index) => data[index][1])
           .attr('class', 'bar')
-          .attr('x', (d, i) => xScale(yearsDate[i]))
+          .attr('x', (d, i) => xScale(date[i]))
           .attr('y', d => height - d)
           .attr('width', barWidth)
           .attr('height', d => d)
@@ -97,27 +95,17 @@
           .attr('transform', 'translate(80, 0)')
           .on('mouseover', function (event, d) {
             const i = this.getAttribute('index')
-            overlay
-              .transition()
-              .duration(0)
-              .style('height', `${d}px`)
-              .style('width', `${barWidth}px`)
-              .style('opacity', 0.9)
-              .style('left', `${(i * barWidth)}px`)
-              .style('top', `${height - d + 58}px`)
-              .style('transform', 'translate(80px)')
             tooltip.transition().duration(0).style('opacity', 0.9)
             tooltip
               .html(`<span>${years[i]}</span><span>${gdp[i]}</span>`)
               .attr('data-date', data[i][0])
-              .style('left', `${i * barWidth + 30}px`)
+              .style('left', `${i * barWidth}px`)
               .style('top', `${height - 100}px`)
               .style('transform', 'translateX(60px)')
 
           })
           .on('mouseout', () => {
             tooltip.transition().duration(20).style('opacity', 0)
-            overlay.transition().duration(20).style('opacity', 0)
           })
 
       })

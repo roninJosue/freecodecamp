@@ -5,9 +5,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
     <style>
-        html{
+        html {
             font-family: 'Roboto', sans-serif;
         }
+
         .container {
             position: relative;
             display: flex;
@@ -24,15 +25,16 @@
             display: flex;
             flex-direction: column;
         }
-        #title,#description{
+
+        #title, #description {
             text-align: center;
         }
 
-        svg{
+        svg {
             margin: 0 auto;
         }
 
-        .county:hover{
+        .county:hover {
             border: 1px solid #000;
         }
     </style>
@@ -59,6 +61,11 @@
     const getEducationData = () => fetch(educationDataUrl).then(res => res.json())
 
     const getCountyDara = () => fetch(countyDataUrl).then(res => res.json())
+
+    const filterItems = (education, d) => {
+      const result = education.filter(item => item.fips === d.id)
+      return result.length ? result[0].bachelorsOrHigher : 0
+    }
 
     const svg = d3.select('svg')
 
@@ -110,13 +117,10 @@
         .append('path')
         .attr('class', 'county')
         .attr('data-fips', d => d.id)
-        .attr('data-education', d => {
-          const result = education.filter(item => item.fips === d.id)
-          return result.length ? result[0].bachelorsOrHigher : 0
-        })
+        .attr('data-education', d => filterItems(education, d))
         .attr('fill', d => {
-          const result = education.filter(item => item.fips === d.id)
-          return result.length ? colorScale(result[0].bachelorsOrHigher) : colorScale(0)
+          const res = filterItems(education, d)
+          return colorScale(res)
         })
         .attr('d', d3.geoPath())
         .on('mouseenter', onMouseEnter)

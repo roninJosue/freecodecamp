@@ -34,6 +34,13 @@
 <script src="https://cdn.freecodecamp.org/testable-projects-fcc/v1/bundle.js"></script>
 <script>
   (function () {
+
+    const tooltip = d3.select('.container')
+      .append('div')
+      .attr('class', 'tooltip')
+      .attr('id', 'tooltip')
+      .style('opacity', 0)
+
     fetch('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/master/cyclist-data.json')
       .then(response => response.json())
       .then((data) => {
@@ -50,7 +57,6 @@
 
         const width = 800
         const height = 700
-        const color = d3.scaleOrdinal(d3.schemeCategory10);
 
         const x = d3.scaleLinear().range([0, width])
         const y = d3.scaleTime().range([0, height])
@@ -58,12 +64,6 @@
 
         const xAxis = d3.axisBottom(x).tickFormat(d3.format('d'))
         const yAxis = d3.axisLeft(y).tickFormat(timeFormat)
-
-        const tooltip = d3.select('.container')
-          .append('div')
-          .attr('class', 'tooltip')
-          .attr('id', 'tooltip')
-          .style('opacity', 0)
 
         const svg = d3.select('.svg')
           .append('svg')
